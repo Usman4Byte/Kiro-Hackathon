@@ -5,9 +5,8 @@ const logger = require('../utils/logger');
 const ApiError = require('../utils/ApiError');
 
 class FileService {
-  async extractText(filePath, mimetype) {
+  async extractText(dataBuffer, mimetype) {
     try {
-      const dataBuffer = await fs.readFile(filePath);
       let text = '';
 
       if (mimetype === 'application/pdf') {

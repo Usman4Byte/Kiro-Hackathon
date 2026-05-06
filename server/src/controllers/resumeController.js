@@ -11,10 +11,10 @@ const uploadResume = asyncHandler(async (req, res) => {
   let fileUrl = null;
 
   if (req.file) {
-    // Extract text from file
-    rawText = await fileService.extractText(req.file.path, req.file.mimetype);
+    // Extract text from file (using buffer for memoryStorage)
+    rawText = await fileService.extractText(req.file.buffer, req.file.mimetype);
     originalFilename = req.file.originalname;
-    fileUrl = `/uploads/${req.file.filename}`;
+    fileUrl = null; // No local URL in serverless memory storage
   }
 
   if (!rawText) {
