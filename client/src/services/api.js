@@ -14,7 +14,16 @@ const api = axios.create({
 // Request interceptor — attach JWT token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token')
+    let token = localStorage.getItem('token')
+    
+    // Backup: try to get from zustand storage if direct token is missing
+    if (!token) {
+      try {
+        const authData = JSON.parse(localStorage.getItem('auth-storage'))
+        token = authData?.state?.token
+      } catch (e) {}
+    }
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -27,11 +36,14 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response.data,
   (error) => {
-    if (error.response?.status === 401) {
+    const isAuthRoute = error.config?.url?.includes('/auth/')
+    
+    if (error.response?.status === 401 && !isAuthRoute) {
       localStorage.removeItem('token')
-      localStorage.removeItem('user')
+      localStorage.removeItem('auth-storage') // Clear zustand too
       window.location.href = '/login'
     }
+    
     const message = error.response?.data?.message || error.message || 'An error occurred'
     return Promise.reject(new Error(message))
   }

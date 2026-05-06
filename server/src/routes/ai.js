@@ -3,7 +3,7 @@ const { body } = require('express-validator');
 const validate = require('../middleware/validate');
 const { verifyToken } = require('../middleware/auth');
 const { aiLimiter } = require('../middleware/rateLimiter');
-const { improveBullets, rewriteSummary } = require('../controllers/aiController');
+const { improveBullets, rewriteSummary, chat } = require('../controllers/aiController');
 
 const router = express.Router();
 
@@ -28,6 +28,16 @@ router.post(
   ],
   validate,
   rewriteSummary
+);
+
+router.post(
+  '/chat',
+  [
+    body('message').isString().notEmpty().withMessage('Message is required'),
+    body('context').optional().isObject(),
+  ],
+  validate,
+  chat
 );
 
 module.exports = router;

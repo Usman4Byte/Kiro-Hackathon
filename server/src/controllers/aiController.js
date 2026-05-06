@@ -22,7 +22,18 @@ const rewriteSummary = asyncHandler(async (req, res) => {
   );
 });
 
+const chat = asyncHandler(async (req, res) => {
+  const { message, context } = req.body;
+  
+  const responseText = await suggestionEngine.chat(message, context);
+  
+  res.status(200).json(
+    new ApiResponse(200, { message: responseText }, 'AI Coach response received')
+  );
+});
+
 module.exports = {
   improveBullets,
   rewriteSummary,
+  chat,
 };

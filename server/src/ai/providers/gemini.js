@@ -5,9 +5,9 @@ class GeminiProvider {
   constructor() {
     this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     // Use flash for fast text generation
-    this.model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    this.model = this.genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
     // Use embedding model for semantic similarity
-    this.embeddingModel = this.genAI.getGenerativeModel({ model: 'text-embedding-004' });
+    this.embeddingModel = this.genAI.getGenerativeModel({ model: 'gemini-embedding-2' });
   }
 
   async generateText(prompt, systemInstruction) {

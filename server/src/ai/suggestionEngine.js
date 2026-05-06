@@ -55,6 +55,29 @@ class SuggestionEngine {
       throw new Error('Failed to generate professional summary');
     }
   }
+
+  async chat(message, context = {}) {
+    const prompt = `
+      User Message: ${message}
+      
+      Current Context (Current Analysis Data):
+      ${JSON.stringify(context)}
+    `;
+
+    const systemInstruction = `
+      You are "ResumeAI Coach", a helpful and expert career assistant. 
+      Your goal is to help users improve their resumes, explain their match scores, and give career advice.
+      Keep your answers concise, encouraging, and highly professional.
+      If the context contains analysis results, use them to provide specific advice.
+    `;
+
+    try {
+      return await aiProvider.generateText(prompt, systemInstruction);
+    } catch (error) {
+      logger.error('Error in AI Coach chat:', error);
+      throw new Error('Failed to get response from AI Coach');
+    }
+  }
 }
 
 module.exports = new SuggestionEngine();

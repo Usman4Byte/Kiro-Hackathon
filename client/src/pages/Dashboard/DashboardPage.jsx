@@ -174,9 +174,9 @@ export function DashboardPage() {
         <motion.div variants={staggerItem}>
           <Card className="h-full">
             <h3 className="font-bold text-slate-900 mb-4">Skill Strengths</h3>
-            {totalAnalyses > 0 ? (
+            {totalAnalyses > 0 && latestAnalysis?.matchedSkills ? (
               <ResponsiveContainer width="100%" height={180}>
-                <BarChart data={mockSkillData} layout="vertical" barSize={8}>
+                <BarChart data={latestAnalysis.matchedSkills.slice(0, 5).map(s => ({ skill: s, level: 100 }))} layout="vertical" barSize={8}>
                   <XAxis type="number" hide domain={[0, 100]} />
                   <YAxis dataKey="skill" type="category" tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} tickLine={false} width={70} />
                   <Tooltip formatter={(v) => [`${v}%`]} />

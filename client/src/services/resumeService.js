@@ -18,7 +18,13 @@ export const resumeService = {
 
       // Step 3: Run Match Engine
       const matchResponse = await api.post('/match/analyze', { resumeId, jobId });
-      return matchResponse.data;
+      const result = matchResponse.data;
+      
+      // Map _id to id for the frontend
+      return {
+        ...result,
+        id: result._id
+      };
       
     } catch (error) {
       throw error;
@@ -32,7 +38,11 @@ export const resumeService = {
 
   async getAnalysisById(id) {
     const response = await api.get(`/match/${id}`);
-    return response.data;
+    const result = response.data;
+    return {
+      ...result,
+      id: result._id
+    };
   },
   
   async deleteAnalysis(id) {
@@ -51,5 +61,10 @@ export const aiService = {
   async rewriteSummary(resumeData, jobContext) {
     const response = await api.post('/ai/rewrite-summary', { resumeData, jobContext });
     return response.data.summary;
+  },
+  
+  async chat(message, context = {}) {
+    const response = await api.post('/ai/chat', { message, context });
+    return response.data;
   }
 }

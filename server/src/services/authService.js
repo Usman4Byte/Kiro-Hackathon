@@ -21,11 +21,15 @@ class AuthService {
       throw new ApiError(400, 'User already exists');
     }
 
-    const user = await User.create({ name, email, passwordHash: password }); // pre-save hashes it
-
+    // Create user object but don't save yet
+    const user = new User({ name, email, passwordHash: password });
+    
+    // Generate tokens
     const { accessToken, refreshToken } = this.generateTokens(user._id);
     user.refreshToken = refreshToken;
-    await user.save({ validateBeforeSave: false });
+    
+    // Save once (this will trigger the password hashing pre-save hook)
+    await user.save();
 
     return { user, accessToken, refreshToken };
   }
@@ -38,6 +42,8 @@ class AuthService {
 
     const { accessToken, refreshToken } = this.generateTokens(user._id);
     user.refreshToken = refreshToken;
+    
+    // Save only the refresh token update (passwordHash won't be re-hashed because it's not modified)
     await user.save({ validateBeforeSave: false });
 
     return { user, accessToken, refreshToken };
